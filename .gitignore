@@ -1,0 +1,11 @@
+bin/*
+gen/*
+.*\.DS_Store
+*\.DS_Store
+*.class
+*.dex
+.hg
+*.so
+obj/*
+lib/*
+libs/*
