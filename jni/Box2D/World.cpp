@@ -463,6 +463,28 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWeldJ
 	return (jlong)world->CreateJoint(&def);
 }
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateRopeJoint
+ * Signature: (JJJZFFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRopeJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY,
+					  jfloat maxLength)
+{
+	b2World* world = (b2World*)addr;
+	b2RopeJointDef def;
+	def.bodyA = (b2Body*)bodyA;
+	def.bodyB = (b2Body*)bodyB;
+	def.collideConnected = collideConnected;
+	def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+	def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+	def.maxLength = maxLength;
+
+	return (jlong)world->CreateJoint(&def);
+}
+
+
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World

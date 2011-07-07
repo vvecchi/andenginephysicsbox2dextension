@@ -37,6 +37,8 @@ import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.physics.box2d.joints.RopeJoint;
+import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.badlogic.gdx.utils.Disposable;
@@ -197,6 +199,7 @@ public class World implements Disposable {
 		if (def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, jointAddr);
 		if (def.type == JointType.RevoluteJoint) joint = new RevoluteJoint(this, jointAddr);
 		if (def.type == JointType.WeldJoint) joint = new WeldJoint(this, jointAddr);
+		if (def.type == JointType.RopeJoint) joint = new RopeJoint(this, jointAddr);
 		if (joint != null) joints.put(joint.addr, joint);
 		JointEdge jointEdgeA = new JointEdge(def.bodyB, joint);
 		JointEdge jointEdgeB = new JointEdge(def.bodyA, joint);
@@ -258,6 +261,11 @@ public class World implements Disposable {
 			return jniCreateWeldJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
 				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle);
 		}
+		if (def.type == JointType.RopeJoint) {
+			RopeJointDef d = (RopeJointDef)def;
+			return jniCreateRopeJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
+				d.localAnchorB.x, d.localAnchorB.y, d.maxLength);
+		}
 
 		return 0;
 	}
@@ -293,6 +301,10 @@ public class World implements Disposable {
 
 	private native long jniCreateWeldJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle);
+	
+	private native long jniCreateRopeJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
+			float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxLength);
+
 
 	/**
 	 * Destroy a joint. This may cause the connected bodies to begin colliding.
