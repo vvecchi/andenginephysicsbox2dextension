@@ -22,6 +22,7 @@
 #include <string.h>
 #include <memory.h>
 
+
 int32 b2BlockAllocator::s_blockSizes[b2_blockSizes] = 
 {
 	16,		// 0
@@ -100,7 +101,12 @@ void* b2BlockAllocator::Allocate(int32 size)
 	if (size == 0)
 		return NULL;
 
-	b2Assert(0 < size && size <= b2_maxBlockSize);
+	b2Assert(0 < size);
+
+	if (size > b2_maxBlockSize)
+	{
+		return b2Alloc(size);
+	}
 
 	int32 index = s_blockSizeLookup[size];
 	b2Assert(0 <= index && index < b2_blockSizes);
@@ -155,7 +161,13 @@ void b2BlockAllocator::Free(void* p, int32 size)
 		return;
 	}
 
-	b2Assert(0 < size && size <= b2_maxBlockSize);
+	b2Assert(0 < size);
+
+	if (size > b2_maxBlockSize)
+	{
+		b2Free(p);
+		return;
+	}
 
 	int32 index = s_blockSizeLookup[size];
 	b2Assert(0 <= index && index < b2_blockSizes);

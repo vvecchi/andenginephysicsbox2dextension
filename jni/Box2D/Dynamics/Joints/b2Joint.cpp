@@ -120,48 +120,52 @@ b2Joint* b2Joint::Create(const b2JointDef* def, b2BlockAllocator* allocator)
 void b2Joint::Destroy(b2Joint* joint, b2BlockAllocator* allocator)
 {
 	joint->~b2Joint();
-	switch (joint->m_type)
-	{
-	case e_distanceJoint:
-		allocator->Free(joint, sizeof(b2DistanceJoint));
-		break;
+		switch (joint->m_type)
+		{
+		case e_distanceJoint:
+			allocator->Free(joint, sizeof(b2DistanceJoint));
+			break;
 
-	case e_mouseJoint:
-		allocator->Free(joint, sizeof(b2MouseJoint));
-		break;
+		case e_mouseJoint:
+			allocator->Free(joint, sizeof(b2MouseJoint));
+			break;
 
-	case e_prismaticJoint:
-		allocator->Free(joint, sizeof(b2PrismaticJoint));
-		break;
+		case e_prismaticJoint:
+			allocator->Free(joint, sizeof(b2PrismaticJoint));
+			break;
 
-	case e_revoluteJoint:
-		allocator->Free(joint, sizeof(b2RevoluteJoint));
-		break;
+		case e_revoluteJoint:
+			allocator->Free(joint, sizeof(b2RevoluteJoint));
+			break;
 
-	case e_pulleyJoint:
-		allocator->Free(joint, sizeof(b2PulleyJoint));
-		break;
+		case e_pulleyJoint:
+			allocator->Free(joint, sizeof(b2PulleyJoint));
+			break;
 
-	case e_gearJoint:
-		allocator->Free(joint, sizeof(b2GearJoint));
-		break;
+		case e_gearJoint:
+			allocator->Free(joint, sizeof(b2GearJoint));
+			break;
 
-	case e_lineJoint:
-		allocator->Free(joint, sizeof(b2LineJoint));
-		break;
-    
-	case e_weldJoint:
-		allocator->Free(joint, sizeof(b2WeldJoint));
-		break;
+		case e_lineJoint:
+			allocator->Free(joint, sizeof(b2LineJoint));
+			break;
 
-	case e_frictionJoint:
-		allocator->Free(joint, sizeof(b2FrictionJoint));
-		break;
+		case e_weldJoint:
+			allocator->Free(joint, sizeof(b2WeldJoint));
+			break;
 
-	default:
-		b2Assert(false);
-		break;
-	}
+		case e_frictionJoint:
+			allocator->Free(joint, sizeof(b2FrictionJoint));
+			break;
+
+		case e_ropeJoint:
+			allocator->Free(joint, sizeof(b2RopeJoint));
+			break;
+
+		default:
+			b2Assert(false);
+			break;
+		}
 }
 
 b2Joint::b2Joint(const b2JointDef* def)

@@ -242,96 +242,96 @@ b2Joint* b2World::CreateJoint(const b2JointDef* def)
 void b2World::DestroyJoint(b2Joint* j)
 {
 	b2Assert(IsLocked() == false);
-	if (IsLocked())
-	{
-		return;
-	}
-
-	bool collideConnected = j->m_collideConnected;
-
-	// Remove from the doubly linked list.
-	if (j->m_prev)
-	{
-		j->m_prev->m_next = j->m_next;
-	}
-
-	if (j->m_next)
-	{
-		j->m_next->m_prev = j->m_prev;
-	}
-
-	if (j == m_jointList)
-	{
-		m_jointList = j->m_next;
-	}
-
-	// Disconnect from island graph.
-	b2Body* bodyA = j->m_bodyA;
-	b2Body* bodyB = j->m_bodyB;
-
-	// Wake up connected bodies.
-	bodyA->SetAwake(true);
-	bodyB->SetAwake(true);
-
-	// Remove from body 1.
-	if (j->m_edgeA.prev)
-	{
-		j->m_edgeA.prev->next = j->m_edgeA.next;
-	}
-
-	if (j->m_edgeA.next)
-	{
-		j->m_edgeA.next->prev = j->m_edgeA.prev;
-	}
-
-	if (&j->m_edgeA == bodyA->m_jointList)
-	{
-		bodyA->m_jointList = j->m_edgeA.next;
-	}
-
-	j->m_edgeA.prev = NULL;
-	j->m_edgeA.next = NULL;
-
-	// Remove from body 2
-	if (j->m_edgeB.prev)
-	{
-		j->m_edgeB.prev->next = j->m_edgeB.next;
-	}
-
-	if (j->m_edgeB.next)
-	{
-		j->m_edgeB.next->prev = j->m_edgeB.prev;
-	}
-
-	if (&j->m_edgeB == bodyB->m_jointList)
-	{
-		bodyB->m_jointList = j->m_edgeB.next;
-	}
-
-	j->m_edgeB.prev = NULL;
-	j->m_edgeB.next = NULL;
-
-	b2Joint::Destroy(j, &m_blockAllocator);
-
-	b2Assert(m_jointCount > 0);
-	--m_jointCount;
-
-	// If the joint prevents collisions, then flag any contacts for filtering.
-	if (collideConnected == false)
-	{
-		b2ContactEdge* edge = bodyB->GetContactList();
-		while (edge)
+		if (IsLocked())
 		{
-			if (edge->other == bodyA)
-			{
-				// Flag the contact for filtering at the next time step (where either
-				// body is awake).
-				edge->contact->FlagForFiltering();
-			}
-
-			edge = edge->next;
+			return;
 		}
-	}
+
+		bool collideConnected = j->m_collideConnected;
+
+		// Remove from the doubly linked list.
+		if (j->m_prev)
+		{
+			j->m_prev->m_next = j->m_next;
+		}
+
+		if (j->m_next)
+		{
+			j->m_next->m_prev = j->m_prev;
+		}
+
+		if (j == m_jointList)
+		{
+			m_jointList = j->m_next;
+		}
+
+		// Disconnect from island graph.
+		b2Body* bodyA = j->m_bodyA;
+		b2Body* bodyB = j->m_bodyB;
+
+		// Wake up connected bodies.
+		bodyA->SetAwake(true);
+		bodyB->SetAwake(true);
+
+		// Remove from body 1.
+		if (j->m_edgeA.prev)
+		{
+			j->m_edgeA.prev->next = j->m_edgeA.next;
+		}
+
+		if (j->m_edgeA.next)
+		{
+			j->m_edgeA.next->prev = j->m_edgeA.prev;
+		}
+
+		if (&j->m_edgeA == bodyA->m_jointList)
+		{
+			bodyA->m_jointList = j->m_edgeA.next;
+		}
+
+		j->m_edgeA.prev = NULL;
+		j->m_edgeA.next = NULL;
+
+		// Remove from body 2
+		if (j->m_edgeB.prev)
+		{
+			j->m_edgeB.prev->next = j->m_edgeB.next;
+		}
+
+		if (j->m_edgeB.next)
+		{
+			j->m_edgeB.next->prev = j->m_edgeB.prev;
+		}
+
+		if (&j->m_edgeB == bodyB->m_jointList)
+		{
+			bodyB->m_jointList = j->m_edgeB.next;
+		}
+
+		j->m_edgeB.prev = NULL;
+		j->m_edgeB.next = NULL;
+
+		b2Joint::Destroy(j, &m_blockAllocator);
+
+		b2Assert(m_jointCount > 0);
+		--m_jointCount;
+
+		// If the joint prevents collisions, then flag any contacts for filtering.
+		if (collideConnected == false)
+		{
+			b2ContactEdge* edge = bodyB->GetContactList();
+			while (edge)
+			{
+				if (edge->other == bodyA)
+				{
+					// Flag the contact for filtering at the next time step (where either
+					// body is awake).
+					edge->contact->FlagForFiltering();
+				}
+
+				edge = edge->next;
+			}
+		}
 }
 
 // Find islands, integrate and solve constraints, solve position constraints
